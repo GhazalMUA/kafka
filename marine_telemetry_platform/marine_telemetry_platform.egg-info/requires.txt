@@ -1,5 +1,7 @@
+confluent-kafka<3,>=2.12
 fastapi<1,>=0.115
 pydantic<3,>=2.10
+pydantic-settings<3,>=2.10
 uvicorn[standard]<1,>=0.34
 
 [dev]

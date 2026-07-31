@@ -12,8 +12,9 @@ from shared.contracts.telemetry import (
 
 
 def valid_event_payload() -> dict[str, object]:
+    """reduces repetition in tests, in this stage i concider a valid payload should be like this:"""
     return {
-        "event_id": str(uuid4()),
+        "event_id": str(uuid4()),  # everytime produces a new uuid till event will be validated
         "schema_version": 1,
         "vessel_id": "vessel-001",
         "equipment_id": "thruster-port-01",

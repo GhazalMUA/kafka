@@ -4,8 +4,10 @@ Version: 0.1.0
 Summary: Production-like marine telemetry ingestion and processing platform
 Requires-Python: >=3.12
 Description-Content-Type: text/markdown
+Requires-Dist: confluent-kafka<3,>=2.12
 Requires-Dist: fastapi<1,>=0.115
 Requires-Dist: pydantic<3,>=2.10
+Requires-Dist: pydantic-settings<3,>=2.10
 Requires-Dist: uvicorn[standard]<1,>=0.34
 Provides-Extra: dev
 Requires-Dist: httpx<1,>=0.28; extra == "dev"
