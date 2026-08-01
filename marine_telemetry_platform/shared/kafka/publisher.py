@@ -54,7 +54,11 @@ class KafkaPublisher:
             raise KafkaPublishError(f"Could not enqueue message for Kafka topic '{topic}'") from exc
 
     def flush(self, timeout: float = 5.0) -> None:
-        remaining_messages = self._producer.flush(timeout)
+        """handles two scenrios 1) my python producer exception 2)kafka exception"""
+        try:
+            remaining_messages = self._producer.flush(timeout)
+        except KafkaException as exc:
+            raise KafkaPublishError("Could not flush messages to Kafka") from exc
 
         if remaining_messages > 0:
             raise KafkaPublishError(f"{remaining_messages} Kafka message(s) were not delivered")

@@ -9,7 +9,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
-        extra="ignore",
+        extra="ignore",  # felan faghat kafka, yani postgres ro ignore kon
     )
 
     kafka_bootstrap_servers: str = Field(
