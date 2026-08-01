@@ -1,3 +1,4 @@
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
 from shared.contracts.telemetry import TelemetryEvent
@@ -5,7 +6,7 @@ from shared.database.models import TelemetryMeasurement
 
 
 # just tuen eventtelemetry(kafka) to telemetrymeasuremnet(database model)
-def build_telemetry_measurement(
+def build_telemetry_measurement_values(
     event: TelemetryEvent,
 ) -> TelemetryMeasurement:
     return TelemetryMeasurement(
@@ -25,6 +26,22 @@ def build_telemetry_measurement(
 def store_telemetry_event(
     session: Session,
     event: TelemetryEvent,
-) -> None:
-    measurement = build_telemetry_measurement(event)
-    session.add(measurement)
+) -> bool:
+    """it says that: insert event, based on event_id and measured_at
+    if exisct, dont insert as new record, continue, dont show exception
+
+    """
+    statement = (
+        insert(TelemetryMeasurement)
+        .values(**build_telemetry_measurement_values(event))
+        .on_conflict_do_nothing(
+            index_elements=[
+                "event_id",
+                "measured_at",
+            ]
+        )
+    )
+
+    result = session.execute(statement)
+
+    return result.rowcount == 1
