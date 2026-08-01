@@ -1,4 +1,5 @@
 from collections.abc import Iterator
+from contextlib import contextmanager
 
 from sqlalchemy import Engine, create_engine
 from sqlalchemy.orm import Session, sessionmaker
@@ -12,7 +13,7 @@ def create_database_engine(database_url: str) -> Engine:
 
 
 def create_session_factory(
-    engine: Engine,   # path of connectivty between python and postgres
+    engine: Engine,  # path of connectivty between python and postgres
 ) -> sessionmaker[Session]:
     return sessionmaker(
         bind=engine,
@@ -21,6 +22,7 @@ def create_session_factory(
     )
 
 
+@contextmanager
 def session_scope(
     session_factory: sessionmaker[Session],
 ) -> Iterator[Session]:

@@ -4,32 +4,37 @@ from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Settings(BaseSettings):
+class StorageWorkerSettings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
-        extra="ignore",  # felan faghat kafka, yani postgres ro ignore kon
+        extra="ignore",
     )
 
     kafka_bootstrap_servers: str = Field(
         default="localhost:9092",
         min_length=1,
     )
+
     kafka_telemetry_raw_topic: str = Field(
         default="telemetry.raw.v1",
         min_length=1,
     )
-    kafka_client_id: str = Field(
-        default="ingestion-api",
+
+    storage_kafka_consumer_group_id: str = Field(
+        default="storage-worker-v1",
         min_length=1,
     )
-    database_url: str = Field(
-        default=("postgresql+psycopg://marine:GHAZALMUA4626d@localhost:5433/marine_telemetry"),
+
+    storage_kafka_client_id: str = Field(
+        default="storage-worker",
         min_length=1,
     )
+
+    database_url: str = Field(min_length=1)
 
 
 @lru_cache
-def get_settings() -> Settings:
-    return Settings()
+def get_storage_worker_settings() -> StorageWorkerSettings:
+    return StorageWorkerSettings()
