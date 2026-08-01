@@ -24,6 +24,13 @@ class Settings(BaseSettings):
         default="ingestion-api",
         min_length=1,
     )
+    database_url: str = Field(
+    default=(
+        "postgresql+psycopg://marine:GHAZALMUA4626d"
+        "@localhost:5433/marine_telemetry"
+    ),
+    min_length=1,
+    )
 
 
 @lru_cache
