@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 
 # route -> database, yek session migire, query mizane, session baste mishe
+
 def get_db_session(
     request: Request,
 ) -> Iterator[Session]:
