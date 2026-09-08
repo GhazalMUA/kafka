@@ -7,8 +7,10 @@ from shared.contracts.telemetry import MeasurementType
 from shared.database.models import TelemetryMeasurement
 
 
-# ye equipment_id dari -> tamame measuremnethaye on equipmentha
+# ye equipment_id dari -> tamame measuremnethaye 
+# on equipmentha
 # -> sorting az jadidtarin -> limit 1
+
 def get_latest_measurement(
     session: Session,
     equipment_id: str,
