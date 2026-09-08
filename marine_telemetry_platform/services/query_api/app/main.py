@@ -17,7 +17,6 @@ from shared.database.session import (
 # mesle databse engine, kafka producer ham faghat yebar sakhte mishe
 # API query starts -> databse engine sakhte mishe -> session factory amade mishe -> requeste ma miad
 
-
 @asynccontextmanager
 async def lifespan(
     application: FastAPI,

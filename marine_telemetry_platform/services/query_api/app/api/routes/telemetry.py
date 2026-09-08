@@ -1,5 +1,5 @@
 from typing import Annotated
-
+from datetime import datetime
 from fastapi import (
     APIRouter,
     Depends,
@@ -20,12 +20,12 @@ from services.query_api.app.repositories.telemetry import (
     get_measurement_history,
 )
 
-
-'''
+from shared.contracts.telemetry import MeasurementType
+"""
 GET /api/v1/equipment/{equipment_id}/latest
 
 GET /api/v1/equipment/{equipment_id}/measurements
-'''
+"""
 
 
 router = APIRouter(
@@ -59,9 +59,7 @@ def read_latest_measurement(
             detail="No telemetry found for this equipment.",
         )
 
-    return TelemetryMeasurementResponse.model_validate(
-        measurement
-    )
+    return TelemetryMeasurementResponse.model_validate(measurement)
 
 
 @router.get(
@@ -75,16 +73,29 @@ def read_measurement_history(
         int,
         Query(ge=1, le=500),
     ] = 100,
+    
+    from_time: Annotated[
+        datetime | None,
+        Query(alias="from")
+    ] = None,
+    
+    to_time: Annotated[
+        datetime | None,
+        Query(alias="to")
+        ] = None,
+    
+    measurement_type: MeasurementType | None = None
+    
 ) -> list[TelemetryMeasurementResponse]:
     measurements = get_measurement_history(
         session,
         equipment_id,
         limit,
+        from_time,
+        to_time,
+        measurement_type
     )
 
     return [
-        TelemetryMeasurementResponse.model_validate(
-            measurement
-        )
-        for measurement in measurements
+        TelemetryMeasurementResponse.model_validate(measurement) for measurement in measurements
     ]
