@@ -27,7 +27,6 @@ class TelemetryMeasurementResponse(BaseModel):
     ingested_at: datetime
 
 
-
 class TelemetryAggregateResponse(BaseModel):
     bucket_start: datetime
     avg_value: float
