@@ -1,4 +1,6 @@
 from confluent_kafka import KafkaException, Message
+from pydantic import ValidationError
+from sqlalchemy.orm import Session, sessionmaker
 
 from services.storage_worker.app.core.config import (
     get_storage_worker_settings,
@@ -19,8 +21,8 @@ from shared.database.session import (
 
 def process_message(
     message: Message,
-    session_factory: object,
-) -> TelemetryEvent:
+    session_factory: sessionmaker[Session],
+) -> tuple[TelemetryEvent, bool]:
     payload = message.value()
 
     if payload is None:
@@ -29,9 +31,11 @@ def process_message(
     event = TelemetryEvent.model_validate_json(payload)
 
     with session_scope(session_factory) as session:
-        store_telemetry_event(session, event)
-
-    return event
+        was_inserted = store_telemetry_event(
+            session,
+            event,
+        )
+    return event, was_inserted
 
 
 def main() -> None:
@@ -55,17 +59,35 @@ def main() -> None:
             if message.error():
                 raise KafkaException(message.error())
 
-            event = process_message(
-                message,
-                session_factory,
-            )
+            try:
+                event, was_inserted = process_message(
+                    message,
+                    session_factory,
+                )
+
+            except (ValidationError, ValueError) as exc:
+                print(
+                    "Skipped invalid telemetry message "
+                    f"at partition {message.partition()} "
+                    f"offset {message.offset()}: {exc}"
+                )
+
+                consumer.commit(
+                    message=message,
+                    asynchronous=False,
+                )
+
+                continue
 
             consumer.commit(
                 message=message,
                 asynchronous=False,
             )
 
-            print(f"Stored event {event.event_id} for equipment {event.equipment_id}")
+            if was_inserted:
+                print(f"Stored event {event.event_id} for equipment {event.equipment_id}")
+            else:
+                print(f"Skipped duplicate event {event.event_id}")
 
     except KeyboardInterrupt:
         print("Storage worker stopping")

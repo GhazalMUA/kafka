@@ -24,13 +24,15 @@ def test_build_telemetry_measurement_values_maps_event_fields() -> None:
         measured_at=measured_at,
     )
 
-    measurement = build_telemetry_measurement_values(event)
+    values = build_telemetry_measurement_values(event)
 
-    assert measurement.event_id == event_id
-    assert measurement.measured_at == measured_at
-    assert measurement.vessel_id == "vessel-001"
-    assert measurement.equipment_id == "thruster-port-01"
-    assert measurement.measurement_type == "bearing_temperature"
-    assert measurement.value == 72.4
-    assert measurement.unit == "celsius"
-    assert measurement.sequence_number == 1
+    assert values["event_id"] == event_id
+    assert values["measured_at"] == measured_at
+    assert values["schema_version"] == 1
+    assert values["vessel_id"] == "vessel-001"
+    assert values["equipment_id"] == "thruster-port-01"
+    assert values["sensor_id"] == "bearing-temp-01"
+    assert values["measurement_type"] == "bearing_temperature"
+    assert values["value"] == 72.4
+    assert values["unit"] == "celsius"
+    assert values["sequence_number"] == 1
