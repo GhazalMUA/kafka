@@ -1,6 +1,5 @@
-from datetime import datetime
 from typing import Annotated
-
+from datetime import datetime
 from fastapi import (
     APIRouter,
     Depends,
@@ -8,6 +7,8 @@ from fastapi import (
     Query,
     status,
 )
+
+from typing import Literal
 from sqlalchemy.orm import Session
 
 from services.query_api.app.api.dependencies import (
@@ -15,13 +16,15 @@ from services.query_api.app.api.dependencies import (
 )
 from services.query_api.app.api.schemas.telemetry import (
     TelemetryMeasurementResponse,
+    TelemetryAggregateResponse
 )
 from services.query_api.app.repositories.telemetry import (
     get_latest_measurement,
     get_measurement_history,
+    get_measurement_aggregates
 )
-from shared.contracts.telemetry import MeasurementType
 
+from shared.contracts.telemetry import MeasurementType
 """
 GET /api/v1/equipment/{equipment_id}/latest
 
@@ -74,14 +77,69 @@ def read_measurement_history(
         int,
         Query(ge=1, le=500),
     ] = 100,
-    from_time: Annotated[datetime | None, Query(alias="from")] = None,
-    to_time: Annotated[datetime | None, Query(alias="to")] = None,
-    measurement_type: MeasurementType | None = None,
+    
+    from_time: Annotated[
+        datetime | None,
+        Query(alias="from")
+    ] = None,
+    
+    to_time: Annotated[
+        datetime | None,
+        Query(alias="to")
+        ] = None,
+    
+    measurement_type: MeasurementType | None = None
+    
 ) -> list[TelemetryMeasurementResponse]:
     measurements = get_measurement_history(
-        session, equipment_id, limit, from_time, to_time, measurement_type
+        session,
+        equipment_id,
+        limit,
+        from_time,
+        to_time,
+        measurement_type
     )
 
     return [
         TelemetryMeasurementResponse.model_validate(measurement) for measurement in measurements
+    ]
+
+
+
+@router.get(
+    "/{equipment_id}/aggregates",
+    response_model=list[TelemetryAggregateResponse],
+)
+def read_measurement_aggregates(
+    equipment_id: str,
+    session: DatabaseSession,
+    measurement_type: MeasurementType,
+    bucket: Literal[
+        "1m",
+        "5m",
+        "15m",
+        "1h",
+        "1d",
+    ] = "5m",
+    from_time: Annotated[
+        datetime | None,
+        Query(alias="from"),
+    ] = None,
+    to_time: Annotated[
+        datetime | None,
+        Query(alias="to"),
+    ] = None,
+) -> list[TelemetryAggregateResponse]:
+    rows = get_measurement_aggregates(
+        session,
+        equipment_id,
+        measurement_type,
+        bucket,
+        from_time,
+        to_time,
+    )
+
+    return [
+        TelemetryAggregateResponse.model_validate(row)
+        for row in rows
     ]
