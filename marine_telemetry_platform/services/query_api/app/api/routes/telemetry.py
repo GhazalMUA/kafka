@@ -7,6 +7,8 @@ from fastapi import (
     Query,
     status,
 )
+
+from typing import Literal
 from sqlalchemy.orm import Session
 
 from services.query_api.app.api.dependencies import (
@@ -14,10 +16,12 @@ from services.query_api.app.api.dependencies import (
 )
 from services.query_api.app.api.schemas.telemetry import (
     TelemetryMeasurementResponse,
+    TelemetryAggregateResponse
 )
 from services.query_api.app.repositories.telemetry import (
     get_latest_measurement,
     get_measurement_history,
+    get_measurement_aggregates
 )
 
 from shared.contracts.telemetry import MeasurementType

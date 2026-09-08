@@ -25,3 +25,12 @@ class TelemetryMeasurementResponse(BaseModel):
 
     sequence_number: int
     ingested_at: datetime
+
+
+
+class TelemetryAggregateResponse(BaseModel):
+    bucket_start: datetime
+    avg_value: float
+    min_value: float
+    max_value: float
+    sample_count: int
