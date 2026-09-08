@@ -11,20 +11,14 @@ def get_latest_measurement(
 ) -> TelemetryMeasurement | None:
     statement = (
         select(TelemetryMeasurement)
-        .where(
-            TelemetryMeasurement.equipment_id
-            == equipment_id
-        )
-        .order_by(
-            TelemetryMeasurement.measured_at.desc()
-        )
+        .where(TelemetryMeasurement.equipment_id == equipment_id)
+        .order_by(TelemetryMeasurement.measured_at.desc())
         .limit(1)
     )
     return session.scalar(statement)
 
 
-
-# equipment_id -> measurmentha -> jadidtarinha bian aval -> maslan akharin 100 record 
+# equipment_id -> measurmentha -> jadidtarinha bian aval -> maslan akharin 100 record
 def get_measurement_history(
     session: Session,
     equipment_id: str,
@@ -32,15 +26,8 @@ def get_measurement_history(
 ) -> list[TelemetryMeasurement]:
     statement = (
         select(TelemetryMeasurement)
-        .where(
-            TelemetryMeasurement.equipment_id
-            == equipment_id
-        )
-        .order_by(
-            TelemetryMeasurement.measured_at.desc()
-        )
+        .where(TelemetryMeasurement.equipment_id == equipment_id)
+        .order_by(TelemetryMeasurement.measured_at.desc())
         .limit(limit)
     )
-    return list(
-        session.scalars(statement)
-    )
+    return list(session.scalars(statement))

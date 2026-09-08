@@ -8,6 +8,7 @@ from shared.contracts.telemetry import TelemetryEvent
 
 # check for my te4lemetry storage worker.
 
+
 def test_build_telemetry_measurement_values_maps_event_fields() -> None:
     event_id = uuid4()
     measured_at = datetime.now(UTC)

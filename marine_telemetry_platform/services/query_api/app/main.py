@@ -14,7 +14,6 @@ from shared.database.session import (
     create_session_factory,
 )
 
-
 # mesle databse engine, kafka producer ham faghat yebar sakhte mishe
 # API query starts -> databse engine sakhte mishe -> session factory amade mishe -> requeste ma miad
 
@@ -25,13 +24,9 @@ async def lifespan(
 ) -> AsyncIterator[None]:
     settings = get_query_api_settings()
 
-    engine = create_database_engine(
-        settings.database_url
-    )
+    engine = create_database_engine(settings.database_url)
 
-    application.state.session_factory = (
-        create_session_factory(engine)
-    )
+    application.state.session_factory = create_session_factory(engine)
 
     try:
         yield
@@ -46,9 +41,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    application.include_router(
-        telemetry_router
-    )
+    application.include_router(telemetry_router)
 
     return application
 
