@@ -3,7 +3,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
-# in Database Model miad telemetrymeasuremnet model ro be json ghabele estefdae vaseye api tabdil mikone
+# in Database Model miad telemetrymeasuremnet model ro
+# be json ghabele estefdae vaseye api tabdil mikone
 
 
 class TelemetryMeasurementResponse(BaseModel):

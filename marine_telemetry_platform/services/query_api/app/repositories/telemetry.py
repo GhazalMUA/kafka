@@ -1,13 +1,14 @@
 from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from shared.contracts.telemetry import MeasurementType
 from shared.database.models import TelemetryMeasurement
 
 
-# ye equipment_id dari -> tamame measuremnethaye on equipmentha -> sorting az jadidtarin -> limit 1
+# ye equipment_id dari -> tamame measuremnethaye on equipmentha
+# -> sorting az jadidtarin -> limit 1
 def get_latest_measurement(
     session: Session,
     equipment_id: str,
@@ -24,8 +25,6 @@ def get_latest_measurement(
 # equipment ro peyda kon -> agar from dasht, ghadimitarharo hazf kon ->
 # agar to dasht jadidtarinharo hazf kon -> age measurment dasht faghat hamon type ro begir
 # -> moratab kon -> limit kon
-
-
 def get_measurement_history(
     session: Session,
     equipment_id: str,
