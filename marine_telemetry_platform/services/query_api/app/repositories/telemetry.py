@@ -6,10 +6,10 @@ from sqlalchemy.orm import Session
 from shared.contracts.telemetry import MeasurementType
 from shared.database.models import TelemetryMeasurement
 
-
-# ye equipment_id dari -> tamame measuremnethaye 
+# ye equipment_id dari -> tamame measuremnethaye
 # on equipmentha
 # -> sorting az jadidtarin -> limit 1
+
 
 def get_latest_measurement(
     session: Session,

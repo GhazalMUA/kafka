@@ -1,7 +1,15 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import DateTime, Float, Index, Integer, String, func
+from sqlalchemy import (
+    DateTime,
+    Float,
+    ForeignKeyConstraint,
+    Index,
+    Integer,
+    String,
+    func,
+)
 from sqlalchemy.dialects.postgresql import UUID as PostgreSQLUUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -21,6 +29,16 @@ class TelemetryMeasurement(Base):
             "ix_telemetry_measurements_sensor_measured_at",
             "sensor_id",
             "measured_at",
+        ),
+        ForeignKeyConstraint(
+            ["vessel_id", "equipment_id"],
+            ["equipment.vessel_id", "equipment.id"],
+            name="fk_telemetry_measurements_equipment",
+        ),
+        ForeignKeyConstraint(
+            ["equipment_id", "sensor_id"],
+            ["sensors.equipment_id", "sensors.id"],
+            name="fk_telemetry_measurements_sensor",
         ),
     )
 
